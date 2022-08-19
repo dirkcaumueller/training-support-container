@@ -18,14 +18,14 @@ services:
   minio:
     container_name: minio
     image: 'quay.io/minio/minio:latest'
+    networks:
+      - pgnet
     ports:
       - 9000:9000
       - 9001:9001
     environment:
       - MINIO_ROOT_USER=minio
       - MINIO_ROOT_PASSWORD=minio123
-    networks:
-      - pgnet
     volumes:
       - 'minio_data:/minio_data'
     command: server /minio_data --console-address ":9001"
@@ -38,11 +38,11 @@ services:
   minio-mc:
     container_name: minio-mc
     image: 'quay.io/minio/mc:latest'
+    networks:
+      - pgnet
     depends_on:
       minio:
         condition: service_healthy
-    networks:
-      - pgnet
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc alias set myminio http://minio:9000 minio minio123;
@@ -53,71 +53,71 @@ services:
   etcd0:
     container_name: etcd0
     image: 'quay.io/coreos/etcd:latest'
+    networks:
+      - pgnet
+    ports:
+      - 23790:2379
+      - 23800:2380
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_NAME=etcd0
       - ETCD_DATA_DIR=/etcd_data
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd0:2380
-      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd0:2379
-      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd0:2380
       - ETCD_INITIAL_CLUSTER=etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380
+      - ETCD_INITIAL_CLUSTER_TOKEN=tkn
       - ETCD_INITIAL_CLUSTER_STATE=new
       - ETCD_HEARTBEAT_INTERVAL=1000
       - ETCD_ELECTION_TIMEOUT=5000
-    ports:
-      - 23790:2379
-      - 23800:2380
-    networks:
-      - pgnet
     volumes:
       - etcd0_data:/etcd_data
 
   etcd1:
     container_name: etcd1
     image: 'quay.io/coreos/etcd:latest'
+    networks:
+      - pgnet
+    ports:
+      - 23791:2379
+      - 23801:2380
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_NAME=etcd1
       - ETCD_DATA_DIR=/etcd_data
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd1:2380
-      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd1:2379
-      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd1:2380
       - ETCD_INITIAL_CLUSTER=etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380
+      - ETCD_INITIAL_CLUSTER_TOKEN=tkn
       - ETCD_INITIAL_CLUSTER_STATE=new
       - ETCD_HEARTBEAT_INTERVAL=1000
       - ETCD_ELECTION_TIMEOUT=5000
-    ports:
-      - 23791:2379
-      - 23801:2380
-    networks:
-      - pgnet
     volumes:
       - etcd1_data:/etcd_data
 
   etcd2:
     container_name: etcd2
     image: 'quay.io/coreos/etcd:latest'
+    networks:
+      - pgnet
+    ports:
+      - 23792:2379
+      - 23802:2380
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_NAME=etcd2
       - ETCD_DATA_DIR=/etcd_data
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd2:2380
-      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd2:2379
-      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd2:2380
       - ETCD_INITIAL_CLUSTER=etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380
+      - ETCD_INITIAL_CLUSTER_TOKEN=tkn
       - ETCD_INITIAL_CLUSTER_STATE=new
       - ETCD_HEARTBEAT_INTERVAL=1000
       - ETCD_ELECTION_TIMEOUT=5000
-    ports:
-      - 23792:2379
-      - 23802:2380
-    networks:
-      - pgnet
     volumes:
       - etcd2_data:/etcd_data
