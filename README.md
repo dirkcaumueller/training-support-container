@@ -8,10 +8,10 @@ This repository is part of the PostgreSQL training and provides a docker compose
 * Docker
 * Docker compose plugin
 
-> 
+> Optionally, create some VMs from this [repository](https://github.com/dirkcaumueller/training-vms.git).
 
 
-## Install Docker
+## Optional: Install Docker
 
 The following steps install docker on Rockylinux 8/9.
 
@@ -37,7 +37,7 @@ sudo usermod -aG docker vagrant
 ```
 
 
-## Open Ports
+## Optional: Open Ports
 
 Open the required firewall ports for Minio.
 
